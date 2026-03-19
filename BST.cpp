@@ -33,7 +33,7 @@ Node* insert(Node *cur,int value){
 //PreOrder Traversal
 void preOrder(Node *cur){
     if(cur != NULL){
-    cout << cur->data << " \n";
+    cout << cur->data << " ";
     preOrder(cur->left);
     preOrder(cur->right);
     }
@@ -43,7 +43,7 @@ void preOrder(Node *cur){
 void InOrder(Node *cur){
     if(cur != NULL){
         InOrder(cur->left);
-        cout<< cur->data << " \n";
+        cout<< cur->data << " ";
         InOrder(cur->right);
     }
 }
@@ -53,17 +53,16 @@ void postOrder(Node *cur){
     if(cur != NULL){
         postOrder(cur->left);
         postOrder(cur->right);
-        cout<< cur->data << " \n";
+        cout<< cur->data << " ";
     }
 }
 
 //min Node
-Node * minNode(Node *root){
-    Node *cur = root;
-    while(cur && cur->left != NULL){
+Node * minNode(Node *cur){
+    while(cur->left != NULL){
         cur = cur->left;
     }
-    return cur;    //returns minimum value
+    return cur;    
 }
 
 //Delete
@@ -72,8 +71,15 @@ Node* Delete(Node *cur, int value){
         cout<< "Value not found,cannot delete value\n";
         return NULL;
     }
-    if(value == cur->data){
-        cout<<"found\n";
+        if(value > cur->data){
+            cur->right = Delete(cur->right,value);
+        }
+        else if(value < cur->data){
+            cur->left = Delete(cur->left,value);
+        }
+
+
+        else{
         //case 1: if having leaf node
         if(cur->left == NULL && cur->right == NULL){
             free(cur);
@@ -92,22 +98,28 @@ Node* Delete(Node *cur, int value){
         }
         //case:3 if having 2 child
         if(cur->right != NULL && cur->right != NULL){
-            Node *temp = cur->right;
-            while(temp->left != NULL){
-                temp = temp->left;
-               // temp = minNode(cur->right);
+               Node* temp = minNode(cur->right);
                 cur->data = temp->data;
-                cur->right = Delete(temp->data,cur->right);
+                cur->right = Delete(cur->right,value);
             }
-        }
-        if(value > cur->data){
-            cur->right = Delete(cur->right,value);
-        }
-        else{
-            cur->left = Delete(cur->left,value);
-        }
-    }
+    }       
     return cur;
+}
+
+//Search
+void Search(Node* cur,int value){
+    if(cur == NULL){
+        cout<<"value not found\n";
+        return;
+    }
+    if(value == cur->data){
+        cout<<"value found\n";
+    }
+    if(value > cur->data){
+        Search(cur->right,value);
+    }else{
+        Search(cur->left,value);
+    }
 }
 
 int main(){
@@ -119,6 +131,7 @@ int main(){
         cout<< "Select 4: PostOrder\n";
         cout<< "Select 5: Exit\n";
         cout<< "Select 6: Delete\n";
+        cout<< "Select 7: Search\n";
 
         int choice;
         cout<< "ENTER YOUR CHOICE: \n";
@@ -144,11 +157,19 @@ int main(){
         case 5: cout<< "Exit!\n";
         break;
 
-        case 6: int value;
+        case 6:
+         int value;
         cout<< "Enter Your Value To Delete\n";
         cin>> value;
         root = Delete(root,value);
         break;
+
+        case 7:
+        cout<< "Enter Your Value To Search\n";
+        cin>> value;
+        Search(root,value);
+        break;
+
         
         default: cout<< "INVALID CHOICE!\n";
             break;
